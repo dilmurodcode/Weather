@@ -1,3 +1,5 @@
+from pyexpat.errors import messages
+
 API_KEY = '649491f17a6529e06b055842a56409f2'
 
 import asyncio
@@ -23,7 +25,6 @@ def reyly_button():
 
 def weather_data(city):
     url = f"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={API_KEY}"
-
     response = requests.get(url)
     if response.status_code == 200:
         data = response.json()
@@ -41,9 +42,9 @@ def weather_data(city):
 
 
 
-
 @dp.message(Command('start'))
 async def start_button(message: Message):
+    print(message.from_user.id)
     await message.answer(text="Assalomu alaykum", reply_markup= reyly_button())
 
 @dp.message(lambda message: message.text == "Ob-havo malumotlari")
@@ -54,8 +55,7 @@ async def result(message: Message):
     city = message.text
     text = weather_data(city)
     if not text:
-        await message.answer(text="dalbay")
-        return
+        await message.answer(text="Bunday shaxar nomi topilmadi")
 
     await bot.send_location(chat_id=message.chat.id,
     latitude=text[1],
